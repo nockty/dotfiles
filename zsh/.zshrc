@@ -117,19 +117,8 @@ repo(){cd $HOME/dev/$1}
 # Show last n commits
 lc(){git log --pretty=format:"%H%x09%an%x09%ad%x09%s" --date=short | head -n $1}
 
-# Fixup latest commit and rebase autosquash
-gfix() {
-  git add "$@"
-  git commit --fixup $(git rev-parse HEAD) --no-verify
-  STASH="true"
-  if git stash | grep -q "No local changes to save"; then
-    STASH="false"
-  fi
-  GIT_SEQUENCE_EDITOR=: git rebase -i --autosquash HEAD~2
-  if [[ "${STASH}" == "true" ]]; then
-    git stash pop
-  fi
-}
+# amend latest commit
+gfix() {ga "$@" && gc --amend --no-edit --no-verify}
 
 # Merge latest updates to the current branch (e.g. rb master)
 rb() {g checkout $1 && gl && g checkout - && g merge $1}
