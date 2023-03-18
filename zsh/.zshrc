@@ -110,6 +110,7 @@ alias sc="source $HOME/.zshrc"
 
 alias c=clear
 alias kd='k describe'
+alias ksd0='ksd --replicas=0'
 
 # Move to a specific repository
 repo(){cd $HOME/dev/$1}
@@ -120,8 +121,18 @@ lc(){git log --pretty=format:"%H%x09%an%x09%ad%x09%s" --date=short | head -n $1}
 # amend latest commit
 gfix() {ga "$@" && gc --amend --no-edit --no-verify}
 
-# Merge latest updates to the current branch (e.g. rb master)
-rb() {g checkout $1 && gl && g checkout - && g merge $1}
+# Main branch (main, master, prod, etc.)
+mb() {git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'}
+# Checkout to main branch and pull
+cmb() {g checkout $(mb) && gl}
+# Merge latest updates to the current branch
+rmb() {cmb && g checkout - && g merge $(mb)}
+# Open new PR from current branch
+function opr() {
+    local BRANCH=$(git rev-parse --abbrev-ref HEAD)
+    local REPO=$(basename `git rev-parse --show-toplevel`)
+    open https://github.com/nockty/$REPO/pull/new/$BRANCH
+}
 
 # print the header (the first line of input)
 # and then run the specified command on the body (the rest of the input)
