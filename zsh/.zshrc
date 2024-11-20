@@ -102,6 +102,8 @@ source $ZSH/oh-my-zsh.sh
 export PATH=$PATH:/usr/local/go/bin
 export GOPATH="${HOME?}/go"
 
+export LC_ALL=en_US.UTF-8
+
 # open ~/.zshrc in using the default editor specified in $EDITOR
 alias ec="vim $HOME/.zshrc"
 
